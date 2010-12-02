@@ -13,9 +13,6 @@ module JabberCamp
 
     def run
       @jabber_client.run
-    rescue => e
-      JabberCamp.logger.error e.inspect
-      raise e
     end
 
     def initialize(*args)
