@@ -2,6 +2,7 @@ module JabberCamp
   class Proxy
 
     attr_reader :jabber_client
+    attr_reader :state
 
 
     def self.run(*args)
@@ -36,12 +37,20 @@ module JabberCamp
 
 
       def handle_ready
+        @state = :ready
         JabberCamp.logger.info "Jabber Connected. Send messages to #{@jabber_client.jid.inspect}"
       end
 
       def handle_disconnect
-        JabberCamp.logger.info "Disconnected from Jabber. Reconnecting..."
-        @jabber_client.connect
+        if @state == :ready
+          JabberCamp.logger.info "Disconnected from Jabber. Reconnecting..."
+          @state = :reconnecting
+          @jabber_client.connect
+        else
+          JabberCamp.logger.error "Unable to connect."
+          EM.stop if EM.reactor_running?
+          @state = :disconnected
+        end
       end
 
       def handle_subscription(s)
