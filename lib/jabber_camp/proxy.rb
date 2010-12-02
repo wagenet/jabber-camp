@@ -1,3 +1,5 @@
+require 'date'
+
 module JabberCamp
   class Proxy
 
@@ -82,9 +84,13 @@ module JabberCamp
         jid = m.from.to_s.split('/').first
         user = JabberCamp::User.find(jid)
         if user
-          # Pass to Campfire
           user.connect unless user.connected?
-          user.campfire_room.speak m.body
+
+          if m.body[0] == '@'
+            process_campfire_command(user, m.body[1..-1])
+          else
+            user.campfire_room.speak m.body
+          end
         else
           @jabber_client.write Blather::Stanza::Message.new(jid, "Access Denied")
         end
@@ -110,7 +116,9 @@ module JabberCamp
       def campfire_listen(listen_user)
         JabberCamp.logger.debug "campfire_listen: #{listen_user.jabber_user}"
 
-        listen_user.listen{|msg| process_message(msg) }
+        listen_user.listen do |msg|
+          JabberCamp::User.connected.each{|u| process_message(u, msg) }
+        end
 
         listen_user.after_stop_listening do |user|
           JabberCamp.logger.debug "after_stop_listening: #{user.jabber_user}"
@@ -127,26 +135,79 @@ module JabberCamp
         @jabber_client.write Blather::Stanza::Message.new(to.jabber_user, text)
       end
 
-      def process_message(msg)
-        for user in JabberCamp::User.users
-          text = nil
+      def process_message(user, msg)
+        text = nil
 
-          case msg['type']
-          when 'TextMessage'
-            if msg['user']['email_address'] != user.campfire_user['email_address']
-              text = msg['user']['name']+': '+msg['body']
+        case msg['type']
+        when 'TextMessage'
+          if msg['user']['email_address'] != user.campfire_user['email_address']
+            text = msg['user']['name']+': '+msg['body']
+          end
+        when 'EnterMessage'
+          text = "**#{msg['user']['name']} entered the room**"
+        when 'KickMessage'
+          text = "**#{msg['user']['name']} left the room**"
+        when 'TimestampMessage'
+          # Ignore
+        else
+          JabberCamp.logger.debug "Unknown Message Type: #{msg.inspect}"
+        end
+
+        send_message(user, text) if text
+      end
+
+      def process_campfire_command(user, cmd)
+        cmd, *args = cmd.downcase.split(/\s+/)
+
+        case cmd
+        when 'get'
+
+          # Defaults
+          date = 'today'
+          limit = 50
+
+          # Set up
+          if args.length == 2
+            date, limit = args
+          elsif args.length == 1
+            if args[0] =~ /^\d+$/
+              limit = args[0]
+            else
+              date = args[0]
             end
-          when 'EnterMessage'
-            text = "**#{msg['user']['name']} entered the room**"
-          when 'KickMessage'
-            text = "**#{msg['user']['name']} left the room**"
-          when 'TimestampMessage'
-            # Ignore
-          else
-            JabberCamp.logger.debug "Unknown Message Type: #{msg.inspect}"
           end
 
-          send_message(user, text) if text
+          # Create date
+          date = case date
+            when 'today'     then Date.today
+            when 'yesterday' then Date.today - 1
+            else                  Date.parse(date) rescue nil
+          end
+
+          limit = limit.to_i
+
+          if date && limit
+            messages = []
+            user.campfire_room.transcript(date).reverse.each do |msg|
+              if msg[:message] && msg[:user_id]
+                msg_user = JabberCamp::Proxy.lookup_campfire_user(msg[:user_id], user.campfire_connection.connection)
+                if msg_user
+                  messages.unshift msg_user[:name]+': '+msg[:message]
+                  break if messages.length >= limit
+                end
+              end
+            end
+
+            if messages.length > 0
+              send_message(user, messages.join("\n"))
+            else
+              send_message(user, "**No messages**")
+            end
+          else
+            send_message(user, "**Invalid Date**")
+          end
+        else
+          send_message(user, "**Invalid command**")
         end
       end
 
