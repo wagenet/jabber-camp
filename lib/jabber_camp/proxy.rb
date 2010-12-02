@@ -1,14 +1,31 @@
 module JabberCamp
   class Proxy
 
+    @@campfire_id_map = {}
+
     attr_reader :jabber_client
     attr_reader :state
 
 
-    def self.run(*args)
-      jc = self.new(*args)
-      jc.run
-      jc
+    class << self
+
+      def run(*args)
+        jc = self.new(*args)
+        jc.run
+        jc
+      end
+
+      def lookup_campfire_user(id, connection)
+        unless @@campfire_id_map[id]
+          begin
+            @@campfire_id_map[id] = connection.get("/users/#{id}.json")["user"]
+          rescue => e
+            JabberCamp.logger.error("Unable to get user data for: #{id}")
+          end
+        end
+        @@campfire_id_map[id]
+      end
+
     end
 
     def run
