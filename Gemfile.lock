@@ -1,0 +1,47 @@
+GIT
+  remote: git://github.com/collectiveidea/tinder.git
+  revision: bfa9a5725d6be251f3d212d2b133847c65af1981
+  specs:
+    tinder (1.4.2)
+      activesupport
+      eventmachine
+      faraday (~> 0.5.1)
+      mime-types
+      multipart-post
+      twitter-stream
+
+GIT
+  remote: git://github.com/sprsquish/blather.git
+  revision: 7002818d6d9bacbb97ea2445b865c16c59ad9f9c
+  specs:
+    blather (0.4.14)
+      eventmachine (>= 0.12.6)
+      nokogiri (>= 1.4.0)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (3.0.3)
+    addressable (2.2.2)
+    eventmachine (0.12.10)
+    faraday (0.5.3)
+      addressable (~> 2.2.2)
+      multipart-post (~> 1.0.1)
+      rack (>= 1.1.0, < 2)
+    i18n (0.4.1)
+    mime-types (1.16)
+    multipart-post (1.0.1)
+    nokogiri (1.4.4)
+    rack (1.2.1)
+    roauth (0.0.3)
+    twitter-stream (0.1.10)
+      eventmachine (>= 0.12.8)
+      roauth (>= 0.0.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  blather!
+  i18n
+  tinder!
