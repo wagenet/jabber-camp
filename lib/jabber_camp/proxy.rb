@@ -105,6 +105,11 @@ module JabberCamp
         end
       end
 
+      def send_message(to, text)
+        JabberCamp.logger.debug "Sending: \"#{text}\" to #{to.jabber_user}"
+        @jabber_client.write Blather::Stanza::Message.new(to.jabber_user, text)
+      end
+
       def process_message(msg)
         for user in JabberCamp::User.users
           text = nil
@@ -124,10 +129,7 @@ module JabberCamp
             JabberCamp.logger.debug "Unknown Message Type: #{msg.inspect}"
           end
 
-          if text
-            JabberCamp.logger.debug "Sending: \"#{text}\" to #{user.jabber_user}"
-            @jabber_client.write Blather::Stanza::Message.new(user.jabber_user, text)
-          end
+          send_message(user, text) if text
         end
       end
 
