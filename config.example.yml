@@ -1,0 +1,18 @@
+---
+campfire_subdomain: strobe
+
+jabber_user:
+  jid:      jabber@strobecorp.com
+  password: PASSWORD
+  server:   talk.google.com
+
+users:
+  -
+    jid:            peterw@strobecorp.com
+    campfire_token: API_TOKEN
+  -
+    jid:            charles@strobecorp.com
+    campfire_token: API_TOKEN
+
+log_level: debug
+
