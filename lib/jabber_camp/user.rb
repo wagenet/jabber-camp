@@ -84,7 +84,7 @@ module JabberCamp
     end
 
     def stop_listening
-      puts "stop_listening: #{listening?}"
+      JabberCamp.logger.debug "stop_listening: #{listening?}"
 
       return unless listening?
 

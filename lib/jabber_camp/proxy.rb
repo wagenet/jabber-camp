@@ -13,7 +13,7 @@ module JabberCamp
     def run
       @jabber_client.run
     rescue => e
-      puts e.inspect
+      JabberCamp.logger.error e.inspect
       raise e
     end
 
@@ -34,7 +34,7 @@ module JabberCamp
 
 
       def handle_ready
-        puts "Jabber Connected. Send messages to #{@jabber_client.jid.inspect}"
+        JabberCamp.logger.info "Jabber Connected. Send messages to #{@jabber_client.jid.inspect}"
       end
 
       def handle_subscription(s)
@@ -66,24 +66,24 @@ module JabberCamp
         if (user)
           if !p.type
             # Available
-            puts "#{jid} connected"
+            JabberCamp.logger.info "#{jid} connected"
             user.connect
             campfire_listen(user) unless JabberCamp::User.listener
           elsif p.unavailable?
             # Unavailable
-            puts "#{jid} disconnected"
+            JabberCamp.logger.info "#{jid} disconnected"
             user.disconnect
           end
         end
       end
 
       def campfire_listen(listen_user)
-        puts "campfire_listen: #{listen_user.jabber_user}"
+        JabberCamp.logger.debug "campfire_listen: #{listen_user.jabber_user}"
 
         listen_user.listen{|msg| process_msg(msg) }
 
         listen_user.after_stop_listening do |user|
-          puts "after_stop_listening: #{user.jabber_user}"
+          JabberCamp.logger.debug "after_stop_listening: #{user.jabber_user}"
 
           listen_user.clear_after_stop_listening
 
@@ -108,11 +108,11 @@ module JabberCamp
           when 'TimestampMessage'
             # Ignore
           else
-            puts "Unknown Message Type: #{msg.inspect}"
+            JabberCamp.logger.debug "Unknown Message Type: #{msg.inspect}"
           end
 
           if text
-            puts "Sending: \"#{text}\" to #{user.jabber_user}"
+            JabberCamp.logger.debug "Sending: \"#{text}\" to #{user.jabber_user}"
             @jabber_client.write Blather::Stanza::Message.new(user.jabber_user, text)
           end
         end

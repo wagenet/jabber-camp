@@ -3,6 +3,8 @@ require "bundler/setup"
 
 require File.expand_path('lib/jabber_camp')
 
+JabberCamp.logger.level = Logger::DEBUG
+
 JabberCamp.campfire_subdomain = 'strobe'
 
 JabberCamp::User.register 'peterw@strobecorp.com', 'CAMPFIRE_TOKEN'
