@@ -27,6 +27,8 @@ module JabberCamp
         @jabber_client = Blather::Client.setup(*args)
 
         @jabber_client.register_handler(:ready){ handle_ready }
+        @jabber_client.register_handler(:disconnected) { handle_disconnect }
+
         @jabber_client.register_handler(:subscription, :request?){|s| handle_subscription(s) }
         @jabber_client.register_handler(:message, :chat?, :body){|m| handle_chat(m) }
         @jabber_client.register_handler(:presence){|p| handle_presence(p) }
@@ -35,6 +37,11 @@ module JabberCamp
 
       def handle_ready
         JabberCamp.logger.info "Jabber Connected. Send messages to #{@jabber_client.jid.inspect}"
+      end
+
+      def handle_disconnect
+        JabberCamp.logger.info "Disconnected from Jabber. Reconnecting..."
+        @jabber_client.connect
       end
 
       def handle_subscription(s)
