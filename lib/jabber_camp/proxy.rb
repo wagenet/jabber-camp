@@ -93,7 +93,7 @@ module JabberCamp
       def campfire_listen(listen_user)
         JabberCamp.logger.debug "campfire_listen: #{listen_user.jabber_user}"
 
-        listen_user.listen{|msg| process_msg(msg) }
+        listen_user.listen{|msg| process_message(msg) }
 
         listen_user.after_stop_listening do |user|
           JabberCamp.logger.debug "after_stop_listening: #{user.jabber_user}"
