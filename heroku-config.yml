@@ -12,5 +12,6 @@ users:
     campfire_token: EVN['USER1_CAMPFIRE']
 
 log:
+  stream: stderr
   level: ENV['LOG_LEVEL']
 

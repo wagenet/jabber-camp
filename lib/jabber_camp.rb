@@ -36,9 +36,18 @@ module JabberCamp
     config = YAML.load_file(config_file)
 
     if config['log']
+      log_target = nil
       if config['log']['path']
-        JabberCamp.logger = Logger.new(config['log']['path'])
+        log_target = config['log']['path']
+      elsif config['log']['stream']
+        log_target = case config['log']['stream'].downcase
+          when 'stdout' then STDOUT
+          when 'stderr' then STDERR
+          else               nil
+        end
       end
+      JabberCamp.logger = Logger.new(log_target) if log_target
+
       if config['log']['level']
         log_level = Logger.const_get(config['log']['level'].upcase) rescue nil
         JabberCamp.logger.level = log_level if log_level
