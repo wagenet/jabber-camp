@@ -5,7 +5,7 @@ require File.expand_path('lib/jabber_camp')
 
 module JabberCamp
   class Rack
-    JabberCamp.run('config.yml')
+    JabberCamp.run('heroku-config.yml')
   end
 end
 

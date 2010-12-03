@@ -1,0 +1,16 @@
+---
+campfire_subdomain: ENV['CAMPFIRE_SUBDOMAIN']
+
+jabber_user:
+  jid:      ENV['JABBER_JID']
+  password: ENV['JABBER_PASS']
+  server:   ENV['JABBER_SERVER']
+
+users:
+  -
+    jid:            ENV['USER1_JID']
+    campfire_token: EVN['USER1_CAMPFIRE']
+
+log:
+  level: ENV['LOG_LEVEL']
+
