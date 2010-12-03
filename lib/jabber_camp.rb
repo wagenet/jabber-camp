@@ -34,7 +34,7 @@ module JabberCamp
 
   def self.run(config_file)
 
-    config = YAML.load_file(ERB.new(File.read(config_file)).result)
+    config = YAML.load(ERB.new(File.read(config_file)).result)
 
     if config['log']
       log_target = nil
