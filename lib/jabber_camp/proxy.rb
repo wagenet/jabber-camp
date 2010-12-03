@@ -54,7 +54,7 @@ module JabberCamp
 
       def handle_ready
         @jabber_state = :ready
-        @jabber_keepalive = EM::PeriodicTimer.new(60) { @jabber_client.stream.send_data ' ' }
+        @jabber_keepalive = EM::PeriodicTimer.new(60) { @jabber_client.send(:stream).send_data ' ' }
         JabberCamp.logger.info "Jabber Connected. Send messages to #{@jabber_client.jid.inspect}"
       end
 
