@@ -2,6 +2,7 @@ require 'blather/client/client'
 require 'tinder'
 require 'logger'
 require 'yaml'
+require 'erb'
 
 require File.expand_path(File.dirname(__FILE__)+'/jabber_camp/user')
 require File.expand_path(File.dirname(__FILE__)+'/jabber_camp/tinder/room')
@@ -33,7 +34,7 @@ module JabberCamp
 
   def self.run(config_file)
 
-    config = YAML.load_file(config_file)
+    config = YAML.load_file(ERB.new(File.read(config_file)).result)
 
     if config['log']
       log_target = nil
