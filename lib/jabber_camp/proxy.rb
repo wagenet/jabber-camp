@@ -165,54 +165,63 @@ module JabberCamp
 
         case cmd
         when 'get'
-
-          # Defaults
-          date = 'today'
-          limit = 50
-
-          # Set up
-          if args.length == 2
-            date, limit = args
-          elsif args.length == 1
-            if args[0] =~ /^\d+$/
-              limit = args[0]
-            else
-              date = args[0]
-            end
-          end
-
-          # Create date
-          date = case date
-            when 'today'     then Date.today
-            when 'yesterday' then Date.today - 1
-            else                  Date.parse(date) rescue nil
-          end
-
-          limit = limit.to_i
-
-          if date && limit
-            messages = []
-            user.campfire_room.transcript(date).reverse.each do |msg|
-              if msg[:message] && msg[:user_id]
-                msg_user = JabberCamp::Proxy.lookup_campfire_user(msg[:user_id], user.campfire_connection.connection)
-                if msg_user
-                  messages.unshift msg_user[:name]+': '+msg[:message]
-                  break if messages.length >= limit
-                end
-              end
-            end
-
-            if messages.length > 0
-              send_message(user, messages.join("\n"))
-            else
-              send_message(user, "**No messages**")
-            end
-          else
-            send_message(user, "**Invalid Date**")
-          end
+          process_get_command(user, *args)
+        when 'users'
+          process_users_command(user)
         else
           send_message(user, "**Invalid command**")
         end
+      end
+
+      def process_get_command(user, *args)
+        # Defaults
+        date = 'today'
+        limit = 50
+
+        # Set up
+        if args.length == 2
+          date, limit = args
+        elsif args.length == 1
+          if args[0] =~ /^\d+$/
+            limit = args[0]
+          else
+            date = args[0]
+          end
+        end
+
+        # Create date
+        date = case date
+          when 'today'     then Date.today
+          when 'yesterday' then Date.today - 1
+          else                  Date.parse(date) rescue nil
+        end
+
+        limit = limit.to_i
+
+        if date && limit
+          messages = []
+          user.campfire_room.transcript(date).reverse.each do |msg|
+            if msg[:message] && msg[:user_id]
+              msg_user = JabberCamp::Proxy.lookup_campfire_user(msg[:user_id], user.campfire_connection.connection)
+              if msg_user
+                messages.unshift msg_user[:name]+': '+msg[:message]
+                break if messages.length >= limit
+              end
+            end
+          end
+
+          if messages.length > 0
+            send_message(user, messages.join("\n"))
+          else
+            send_message(user, "**No messages**")
+          end
+        else
+          send_message(user, "**Invalid Date**")
+        end
+      end
+
+      def process_users_command(user)
+        JabberCamp.logger.info user.campfire_room.users.inspect
       end
 
   end
