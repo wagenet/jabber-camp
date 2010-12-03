@@ -14,5 +14,6 @@ users:
     jid:            charles@strobecorp.com
     campfire_token: API_TOKEN
 
-log_level: debug
-
+log:
+  target: debug.log
+  level: debug

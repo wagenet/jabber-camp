@@ -35,9 +35,14 @@ module JabberCamp
 
     config = YAML.load_file(config_file)
 
-    if config['log_level']
-      log_level = Logger.const_get(config['log_level'].upcase) rescue nil
-      JabberCamp.logger.level = log_level if log_level
+    if config['log']
+      if config['log']['path']
+        JabberCamp.logger = Logger.new(config['log']['path'])
+      end
+      if config['log']['level']
+        log_level = Logger.const_get(config['log']['level'].upcase) rescue nil
+        JabberCamp.logger.level = log_level if log_level
+      end
     end
 
     JabberCamp.campfire_subdomain = config['campfire_subdomain']
