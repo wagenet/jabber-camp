@@ -9,7 +9,7 @@ jabber_user:
 users:
   -
     jid:            <%= ENV['USER1_JID'] %>
-    campfire_token: <%= EVN['USER1_CAMPFIRE'] %>
+    campfire_token: <%= ENV['USER1_CAMPFIRE'] %>
 
 log:
   stream: stderr
