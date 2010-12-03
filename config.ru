@@ -16,4 +16,4 @@ module JabberCamp
   end
 end
 
-JabberCamp.new
+run JabberCamp::Rack.new
