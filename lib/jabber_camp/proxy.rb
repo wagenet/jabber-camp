@@ -138,6 +138,8 @@ module JabberCamp
       end
 
       def process_message(user, msg)
+        JabberCamp.logger.debug "Message for #{user.inspect}: #{msg.inspect}"
+
         text = nil
 
         case msg['type']
