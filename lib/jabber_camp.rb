@@ -54,6 +54,8 @@ module JabberCamp
       end
     end
 
+    JabberCamp.logger.debug config.inspect
+
     JabberCamp.campfire_subdomain = config['campfire_subdomain']
 
     for user in config['users']
