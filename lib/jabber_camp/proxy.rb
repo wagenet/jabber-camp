@@ -223,7 +223,12 @@ module JabberCamp
       end
 
       def process_users_command(user)
-        JabberCamp.logger.info user.campfire_room.users.inspect
+        current_users = user.campfire_room.users.map{|u| "- #{u['name']}" }
+        if current_users.length > 0
+          send_message(user, "**Current Users**\n#{current_users.join("\n")}")
+        else
+          send_message(user, "**No Users**")
+        end
       end
 
   end
