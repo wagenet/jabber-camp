@@ -42,6 +42,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  addressable
   blather!
   i18n
   tinder!
