@@ -38,8 +38,8 @@ module JabberCamp
 
     if config['log']
       log_target = nil
-      if config['log']['path']
-        log_target = config['log']['path']
+      if config['log']['file']
+        log_target = config['log']['file']
       elsif config['log']['stream']
         log_target = case config['log']['stream'].downcase
           when 'stdout' then STDOUT

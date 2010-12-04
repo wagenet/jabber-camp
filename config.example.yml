@@ -15,5 +15,5 @@ users:
     campfire_token: API_TOKEN
 
 log:
-  target: debug.log
+  file: debug.log
   level: debug
