@@ -138,7 +138,7 @@ module JabberCamp
       end
 
       def process_message(user, msg)
-        JabberCamp.logger.debug "Message for #{user.inspect}: #{msg.inspect}"
+        JabberCamp.logger.debug "Incoming Message: #{msg.inspect}"
 
         text = nil
 
