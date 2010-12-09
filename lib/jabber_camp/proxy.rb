@@ -132,9 +132,15 @@ module JabberCamp
         end
       end
 
-      def send_message(to, text)
+      def send_message(to, text, xhtml=false)
         JabberCamp.logger.debug "Sending: \"#{text}\" to #{to.jabber_user}"
-        @jabber_client.write Blather::Stanza::Message.new(to.jabber_user, text)
+        msg = Blather::Stanza::Message.new(to.jabber_user)
+        if xhtml
+          msg.xhtml = body
+        else
+          msg.body = body
+        end
+        @jabber_client.write msg
       end
 
       def process_message(user, msg)
@@ -143,12 +149,14 @@ module JabberCamp
         is_current = msg['user'] && msg['user']['email_address'] == user.campfire_user['email_address']
 
         text = nil
+        xhtml = false
 
         case msg['type']
         when 'TextMessage'
           text = msg['user']['name']+': '+msg['body'] unless is_current
         when 'PasteMessage'
           text = "#{msg['user']['name']}<br/><span style='font-family: monospace'>#{msg['body']}</span>" unless is_current
+          xhtml = true
         when 'EnterMessage'
           text = "**#{msg['user']['name']} entered the room**"
         when 'KickMessage'
@@ -161,7 +169,7 @@ module JabberCamp
           JabberCamp.logger.debug "Unknown Message Type: #{msg.inspect}"
         end
 
-        send_message(user, text) if text
+        send_message(user, text, xhtml) if text
       end
 
       def process_campfire_command(user, cmd)
