@@ -24,6 +24,10 @@ module JabberCamp
           message[:created_at] = Time.parse(message[:created_at])
           yield(message)
         end
+
+        if @stream.error?
+          JabberCamp.logger.error "Unable to listen to Campfire"
+        end
       end
 
     end
