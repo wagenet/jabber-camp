@@ -49,7 +49,10 @@ module JabberCamp
       end
 
       if log_target
-        JabberCamp.logger = Logger.new(log_target, config['log']['age'], config['log']['size'])
+        age = config['log']['age']
+        size = config['log']['size']
+        age = age.to_i if size
+        JabberCamp.logger = Logger.new(log_target, age, size)
       end
 
       if config['log']['level']
