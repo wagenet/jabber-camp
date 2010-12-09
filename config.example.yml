@@ -18,4 +18,4 @@ log:
   file:  debug.log
   level: debug
   age:   10
-  size:  5_000_000
+  size:  5000000

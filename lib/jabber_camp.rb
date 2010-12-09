@@ -51,7 +51,10 @@ module JabberCamp
       if log_target
         age = config['log']['age']
         size = config['log']['size']
-        age = age.to_i if size
+        if size
+          age = age.to_i
+          size = size.to_i
+        end
         JabberCamp.logger = Logger.new(log_target, age, size)
       end
 
