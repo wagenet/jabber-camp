@@ -177,7 +177,7 @@ module JabberCamp
 
         case cmd
         when 'get'
-          process_get_command(user, *data.split(/\s+/)
+          process_get_command(user, *data.split(/\s+/))
         when 'users'
           process_users_command(user)
         when 'link'
