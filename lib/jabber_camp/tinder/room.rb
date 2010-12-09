@@ -1,3 +1,5 @@
+require 'json'
+
 module JabberCamp
   module Tinder
     module RoomExtensions
@@ -18,15 +20,16 @@ module JabberCamp
         }.merge(options)
 
         @stream = ::Twitter::JSONStream.connect(options)
+
+        @stream.on_error do |e|
+          JabberCamp.logger.error "Campfire Listening Error: #{e}"
+        end
+
         @stream.each_item do |message|
-          message = HashWithIndifferentAccess.new(JSON.parse(message))
+          message = HashWithIndifferentAccess.new(::JSON.parse(message))
           message[:user] = user(message.delete(:user_id))
           message[:created_at] = Time.parse(message[:created_at])
           yield(message)
-        end
-
-        if @stream.error?
-          JabberCamp.logger.error "Unable to listen to Campfire"
         end
       end
 
