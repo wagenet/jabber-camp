@@ -155,8 +155,10 @@ module JabberCamp
         when 'TextMessage'
           text = msg['user']['name']+': '+msg['body'] unless is_current
         when 'PasteMessage'
-          text = "#{msg['user']['name']}<br/><span style='font-family: monospace'>#{msg['body']}</span>" unless is_current
-          xhtml = true
+          unless is_current
+            text = "#{msg['user']['name']}<br/><span style='font-family: monospace'>#{msg['body'].gsub(/\n/, '<br/>')}</span>"
+            xhtml = true
+          end
         when 'EnterMessage'
           text = "**#{msg['user']['name']} entered the room**"
         when 'KickMessage'
