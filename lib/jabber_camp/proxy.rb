@@ -140,13 +140,15 @@ module JabberCamp
       def process_message(user, msg)
         JabberCamp.logger.debug "Incoming Message: #{msg.inspect}"
 
+        is_current = msg['user']['email_address'] != user.campfire_user['email_address']
+
         text = nil
 
         case msg['type']
         when 'TextMessage'
-          if msg['user']['email_address'] != user.campfire_user['email_address']
-            text = msg['user']['name']+': '+msg['body']
-          end
+          text = msg['user']['name']+': '+msg['body'] unless is_current
+        when 'PasteMessage'
+          text = "#{msg['user']['name']}<br/><span style='font-family: monospace'>#{msg[:body]}</span>" unless is_current
         when 'EnterMessage'
           text = "**#{msg['user']['name']} entered the room**"
         when 'KickMessage'
