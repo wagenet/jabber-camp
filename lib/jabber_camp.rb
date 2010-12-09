@@ -63,6 +63,10 @@ module JabberCamp
       JabberCamp::User.register user['jid'], user['campfire_token']
     end
 
+    EM.error_handler do |e|
+      JabberCamp.logger.error "Error raised during event loop: #{e.message}"
+    end
+
     EventMachine.run do
       jid = config['jabber_user']['jid']
       pass = config['jabber_user']['password']
