@@ -88,7 +88,7 @@ module JabberCamp
         if user
           user.connect unless user.connected?
 
-          if m.body[0] == '@'
+          if m.body[0..0] == '@'
             process_campfire_command(user, m.body[1..-1])
           else
             user.campfire_room.speak m.body
