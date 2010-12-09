@@ -170,6 +170,8 @@ module JabberCamp
           process_get_command(user, *args)
         when 'users'
           process_users_command(user)
+        when 'link'
+          process_link_command(user)
         else
           send_message(user, "**Invalid command**")
         end
@@ -229,6 +231,10 @@ module JabberCamp
         else
           send_message(user, "**No Users**")
         end
+      end
+
+      def process_link_command(user)
+        send_message(user, "http://#{JabberCamp.campfire_subdomain}.campfirenow.com/rooms/#{user.campfire_room.id}")
       end
 
   end
