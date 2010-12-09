@@ -173,15 +173,21 @@ module JabberCamp
       end
 
       def process_campfire_command(user, cmd)
-        cmd, *args = cmd.downcase.split(/\s+/)
+        cmd, data = cmd.downcase.split(/\s+/, 2)
 
         case cmd
         when 'get'
-          process_get_command(user, *args)
+          process_get_command(user, *data.split(/\s+/)
         when 'users'
           process_users_command(user)
         when 'link'
           process_link_command(user)
+        when 'paste'
+          process_paste_command(user, data)
+        when 'play'
+          process_play_command(user, data)
+        when 'tweet'
+          process_tweet_command(user, data)
         else
           send_message(user, "**Invalid command**")
         end
@@ -245,6 +251,18 @@ module JabberCamp
 
       def process_link_command(user)
         send_message(user, "http://#{JabberCamp.campfire_subdomain}.campfirenow.com/room/#{user.campfire_room.id}")
+      end
+
+      def process_paste_command(user, text)
+        user.campfire_room.paste(text)
+      end
+
+      def process_play_command(user, sound)
+        user.campfire_room.play(sound)
+      end
+
+      def process_tweet_command(user, url)
+        user.campfire_room.tweet(url)
       end
 
   end
