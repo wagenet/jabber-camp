@@ -162,7 +162,7 @@ module JabberCamp
         when 'KickMessage'
           text = "**#{msg['user']['name']} left the room**"
         when 'SoundMessage'
-          text = "**#{msg['user']['name']} played: #{msg['body']}**"
+          text = "**#{msg['user']['name']} played: #{msg['body']}**" unless is_current
         when 'TimestampMessage'
           # Ignore
         else
