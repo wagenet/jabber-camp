@@ -173,11 +173,11 @@ module JabberCamp
       end
 
       def process_campfire_command(user, cmd)
-        cmd, data = cmd.downcase.split(/\s+/, 2)
+        cmd, data = cmd.split(/\s+/, 2)
 
-        case cmd
+        case cmd.downcase
         when 'get'
-          process_get_command(user, *data.split(/\s+/))
+          process_get_command(user, *data.downcase.split(/\s+/))
         when 'users'
           process_users_command(user)
         when 'link'
