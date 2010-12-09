@@ -47,7 +47,10 @@ module JabberCamp
           else               nil
         end
       end
-      JabberCamp.logger = Logger.new(log_target) if log_target
+
+      if log_target
+        JabberCamp.logger = Logger.new(log_target, config['log']['age'], config['log']['size'])
+      end
 
       if config['log']['level']
         log_level = Logger.const_get(config['log']['level'].upcase) rescue nil

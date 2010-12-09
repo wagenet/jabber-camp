@@ -15,5 +15,7 @@ users:
     campfire_token: API_TOKEN
 
 log:
-  file: debug.log
+  file:  debug.log
   level: debug
+  age:   10
+  size:  5_000_000
