@@ -236,7 +236,7 @@ module JabberCamp
       end
 
       def process_link_command(user)
-        send_message(user, "http://#{JabberCamp.campfire_subdomain}.campfirenow.com/rooms/#{user.campfire_room.id}")
+        send_message(user, "http://#{JabberCamp.campfire_subdomain}.campfirenow.com/room/#{user.campfire_room.id}")
       end
 
   end
