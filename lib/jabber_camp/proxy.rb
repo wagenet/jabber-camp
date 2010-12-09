@@ -136,9 +136,9 @@ module JabberCamp
         JabberCamp.logger.debug "Sending: \"#{text}\" to #{to.jabber_user}"
         msg = Blather::Stanza::Message.new(to.jabber_user)
         if xhtml
-          msg.xhtml = body
+          msg.xhtml = text
         else
-          msg.body = body
+          msg.body = text
         end
         @jabber_client.write msg
       end
