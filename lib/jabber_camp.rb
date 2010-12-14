@@ -61,6 +61,7 @@ module JabberCamp
       if config['log']['level']
         log_level = Logger.const_get(config['log']['level'].upcase) rescue nil
         JabberCamp.logger.level = log_level if log_level
+        Blather::Stream::Parser.debug = true if log_level == Logger::DEBUG
       end
     end
 
