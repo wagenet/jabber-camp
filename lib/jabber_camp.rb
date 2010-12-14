@@ -55,7 +55,7 @@ module JabberCamp
           age = age.to_i
           size = size.to_i
         end
-        JabberCamp.logger = Logger.new(log_target, age, size)
+        JabberCamp.logger = Blather.logger = Logger.new(log_target, age, size)
       end
 
       if config['log']['level']
