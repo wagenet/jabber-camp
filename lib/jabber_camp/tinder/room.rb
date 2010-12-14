@@ -26,6 +26,7 @@ module JabberCamp
         end
 
         @stream.each_item do |message|
+          JabberCamp.logger.debug "Incoming Campfire Message: #{message}"
           message = HashWithIndifferentAccess.new(::JSON.parse(message))
           message[:user] = user(message.delete(:user_id))
           message[:created_at] = Time.parse(message[:created_at])
