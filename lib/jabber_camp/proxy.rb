@@ -127,7 +127,7 @@ module JabberCamp
       end
 
       def process_message(user, msg)
-        JabberCamp.logger.debug "Incoming Message: #{msg.inspect}"
+        JabberCamp.logger.debug "Processing Message for #{user.campfire_user['name']}: #{msg.inspect}"
 
         return if msg['user'] && msg['user']['email_address'] == user.campfire_user['email_address']
 
