@@ -22,7 +22,8 @@ module JabberCamp
         @stream = ::Twitter::JSONStream.connect(options)
 
         @stream.on_error do |e|
-          JabberCamp.logger.error "Campfire Listening Error: #{e}"
+          JabberCamp.logger.error "Campfire Listening Error: #{e} - #{@stream.inspect}"
+          @error_handler.call(e) if @error_handler
         end
 
         @stream.each_item do |message|
@@ -35,6 +36,11 @@ module JabberCamp
       end
 
     end
+
+    def on_error(&block)
+      @error_handler = &block
+    end
+
   end
 end
 

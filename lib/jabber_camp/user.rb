@@ -82,6 +82,7 @@ module JabberCamp
     def listen(&block)
       raise unless connected?
       return if listening?
+      campfire_room.on_error{ stop_listening }
       campfire_room.listen_without_run(&block)
     end
 
