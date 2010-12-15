@@ -7,7 +7,8 @@ module JabberCamp
 
     attr_reader :jabber_client
     attr_reader :jabber_state
-    attr_reader :jabber_keepalive
+
+    attr_reader :keepalive
 
     class << self
 
@@ -54,7 +55,12 @@ module JabberCamp
 
       def handle_ready
         @jabber_state = :ready
-        @jabber_keepalive = EM::PeriodicTimer.new(60) { @jabber_client.send(:stream).send_data ' ' }
+
+        @keepalive = EM::PeriodicTimer.new(60) do
+          @jabber_client.send(:stream).send_data ' '
+          JabberCamp::User.connected.each{|u| u.connect }
+        end
+
         JabberCamp.logger.info "Jabber Connected. Send messages to #{@jabber_client.jid.inspect}"
       end
 
@@ -62,7 +68,7 @@ module JabberCamp
         if @jabber_state == :ready
           JabberCamp.logger.info "Disconnected from Jabber. Reconnecting..."
           @jabber_state = :reconnecting
-          @jabber_keepalive.cancel
+          @keepalive.cancel
           @jabber_client.connect
         else
           JabberCamp.logger.error "Unable to connect."

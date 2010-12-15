@@ -50,16 +50,18 @@ module JabberCamp
     end
 
     def connect
-      return if connected?
+      if connected?
+        @campfire_room.join
+      else
+        @campfire_connection = ::Tinder::Campfire.new(JabberCamp.campfire_subdomain, :token => campfire_token)
 
-      @campfire_connection = ::Tinder::Campfire.new(JabberCamp.campfire_subdomain, :token => campfire_token)
+        @campfire_room = @campfire_connection.rooms.first
+        @campfire_room.join
 
-      @campfire_room = @campfire_connection.rooms.first
-      @campfire_room.join
+        @campfire_user = @campfire_connection.me
 
-      @campfire_user = @campfire_connection.me
-
-      @connected = true
+        @connected = true
+      end
     end
 
     def disconnect
