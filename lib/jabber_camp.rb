@@ -4,8 +4,10 @@ require 'logger'
 require 'yaml'
 require 'erb'
 
-require File.expand_path(File.dirname(__FILE__)+'/jabber_camp/user')
+require File.expand_path(File.dirname(__FILE__)+'/jabber_camp/blather/stream/parser')
 require File.expand_path(File.dirname(__FILE__)+'/jabber_camp/tinder/room')
+
+require File.expand_path(File.dirname(__FILE__)+'/jabber_camp/user')
 require File.expand_path(File.dirname(__FILE__)+'/jabber_camp/proxy')
 
 module JabberCamp
