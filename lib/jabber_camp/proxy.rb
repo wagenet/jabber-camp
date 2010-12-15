@@ -106,12 +106,29 @@ module JabberCamp
             # Available
             JabberCamp.logger.info "#{jid} connected"
             user.connect
-            user.listen{|msg| process_message(user, msg) }
+            campfire_listen(user) unless JabberCamp::User.listener
           elsif p.unavailable?
             # Unavailable
             JabberCamp.logger.info "#{jid} disconnected"
             user.disconnect
           end
+        end
+      end
+
+      def campfire_listen(listen_user)
+        JabberCamp.logger.debug "campfire_listen: #{listen_user.jabber_user}"
+
+        listen_user.listen do |msg|
+          JabberCamp::User.connected.each{|u| process_message(u, msg) }
+        end
+
+        listen_user.after_stop_listening do |user|
+          JabberCamp.logger.debug "after_stop_listening: #{user.jabber_user}"
+
+          listen_user.clear_after_stop_listening
+
+          new_user = JabberCamp::User.connected.first
+          campfire_listen(new_user) if new_user
         end
       end
 
@@ -129,24 +146,26 @@ module JabberCamp
       def process_message(user, msg)
         JabberCamp.logger.debug "Processing Message for #{user.campfire_user['name']}: #{msg.inspect}"
 
-        return if msg['user'] && msg['user']['email_address'] == user.campfire_user['email_address']
+        is_current = msg['user'] && msg['user']['email_address'] == user.campfire_user['email_address']
 
         text = nil
         xhtml = false
 
         case msg['type']
         when 'TextMessage'
-          text = msg['user']['name']+': '+msg['body']
+          text = msg['user']['name']+': '+msg['body'] unless is_current
         when 'PasteMessage'
-          text = "#{msg['user']['name']}<br/>" +
-                 "<font face='monospace' style='font-family: monospace'>#{msg['body'].gsub(/\n/, '<br/>')}</font>"
-          xhtml = true
+          unless is_current
+            text = "#{msg['user']['name']}<br/>" +
+                   "<font face='monospace' style='font-family: monospace'>#{msg['body'].gsub(/\n/, '<br/>')}</font>"
+            xhtml = true
+          end
         when 'EnterMessage'
           text = "**#{msg['user']['name']} entered the room**"
         when 'KickMessage'
           text = "**#{msg['user']['name']} left the room**"
         when 'SoundMessage'
-          text = "**#{msg['user']['name']} played: #{msg['body']}**"
+          text = "**#{msg['user']['name']} played: #{msg['body']}**" unless is_current
         when 'TimestampMessage'
           # Ignore
         else
