@@ -35,12 +35,11 @@ module JabberCamp
         end
       end
 
-    end
+      def on_error(&block)
+        @error_handler = block
+      end
 
-    def on_error(&block)
-      @error_handler = block
     end
-
   end
 end
 
