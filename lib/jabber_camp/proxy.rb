@@ -198,6 +198,8 @@ module JabberCamp
           process_play_command(user, data)
         when 'tweet'
           process_tweet_command(user, data)
+        when 'debug'
+          process_debug_command(user)
         else
           send_message(user, "**Invalid command**")
         end
@@ -273,6 +275,12 @@ module JabberCamp
 
       def process_tweet_command(user, url)
         user.campfire_room.tweet(url)
+      end
+
+      def process_debug_command(user)
+        msg = "Jabber Users: #{JabberCamp::User.connected.map{|u| u.campfire_user['name'] }.join(', ')}\n"
+        msg = "Listener: #{JabberCamp::User.listener.campfire_user['name']}"
+        send_message(user, msg)
       end
 
   end
