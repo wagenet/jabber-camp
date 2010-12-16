@@ -117,6 +117,9 @@ module JabberCamp
             # Unavailable
             JabberCamp.logger.info "#{jid} disconnected"
             user.disconnect
+
+            new_user = JabberCamp::User.connected.first
+            campfire_listen(new_user) if new_user
           end
         end
       end
@@ -126,15 +129,6 @@ module JabberCamp
 
         listen_user.listen do |msg|
           JabberCamp::User.connected.each{|u| process_message(u, msg) }
-        end
-
-        listen_user.after_stop_listening do |user|
-          JabberCamp.logger.debug "after_stop_listening: #{user.jabber_user}"
-
-          listen_user.clear_after_stop_listening
-
-          new_user = JabberCamp::User.connected.first
-          campfire_listen(new_user) if new_user
         end
       end
 

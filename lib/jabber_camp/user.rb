@@ -92,18 +92,6 @@ module JabberCamp
       return unless listening?
 
       campfire_room.stop_listening
-
-      if @after_stop_listening
-        @after_stop_listening.call(self)
-      end
-    end
-
-    def after_stop_listening(&block)
-      @after_stop_listening = block
-    end
-
-    def clear_after_stop_listening
-      @after_stop_listening = nil
     end
 
   end
