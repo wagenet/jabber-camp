@@ -112,12 +112,13 @@ module JabberCamp
             # Available
             JabberCamp.logger.info "#{jid} connected"
             user.connect
-            campfire_listen(user) unless JabberCamp::User.listener
           elsif p.unavailable?
             # Unavailable
             JabberCamp.logger.info "#{jid} disconnected"
             user.disconnect
+          end
 
+          unless JabberCamp::User.listener
             new_user = JabberCamp::User.connected.first
             campfire_listen(new_user) if new_user
           end
@@ -126,6 +127,12 @@ module JabberCamp
 
       def campfire_listen(listen_user)
         JabberCamp.logger.debug "campfire_listen: #{listen_user.jabber_user}"
+
+        listen_user.campfire_room.on_error do |e|
+          listen_user.stop_listening
+          new_user = (JabberCamp::User.connected - [listen_user]).first
+          campfire_listen(new_user) if new_user
+        end
 
         listen_user.listen do |msg|
           JabberCamp::User.connected.each{|u| process_message(u, msg) }
