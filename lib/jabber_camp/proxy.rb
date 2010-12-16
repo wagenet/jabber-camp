@@ -279,7 +279,7 @@ module JabberCamp
 
       def process_debug_command(user)
         msg = "Jabber Users: #{JabberCamp::User.connected.map{|u| u.campfire_user['name'] }.join(', ')}\n"
-        msg = "Listener: #{JabberCamp::User.listener.campfire_user['name']}"
+        msg += "Listener: #{JabberCamp::User.listener.campfire_user['name']}"
         send_message(user, msg)
       end
 
