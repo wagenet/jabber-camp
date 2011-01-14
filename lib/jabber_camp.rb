@@ -76,7 +76,7 @@ module JabberCamp
     end
 
     EM.error_handler do |e|
-      JabberCamp.logger.error "Error raised during event loop: #{e.message}"
+      JabberCamp.logger.error "Error raised during event loop: #{e.message}\nBACKTRACE:\n#{e.backtrace.join("\n")}"
     end
 
     EventMachine.run do
