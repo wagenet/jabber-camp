@@ -44,6 +44,10 @@ module JabberCamp
       def setup_jabber(*args)
         @jabber_client = Blather::Client.setup(*args)
 
+        @jabber_client.register_handler(:error) do |err|
+          JabberCamp.logger.error "Blather error: #{e.message}\nBACKTRACE:\n#{err.backtrace.join("\n")}"
+        end
+
         @jabber_client.register_handler(:ready){ handle_ready }
         @jabber_client.register_handler(:disconnected) { handle_disconnect }
 
